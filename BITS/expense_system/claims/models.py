@@ -16,9 +16,15 @@ class ExpenseClaim(models.Model):
     centre = models.ForeignKey(Centre, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    type = models.CharField(max_length=50, choices=[
+        ('travel', 'Travel'),
+        ('food', 'Food'),
+        ('accommodation', 'Accommodation'),
+        ('other', 'Other')
+    ], default='other')
 
     def __str__(self):
-        return f"Claim {self.id} by {self.employee.username}"
+        return f"Claim {self.id} by {self.employee.username} - {self.type} - {self.total_amount}"
 
 class ClaimItem(models.Model):
     claim = models.ForeignKey(ExpenseClaim, related_name='items', on_delete=models.CASCADE)
@@ -31,4 +37,4 @@ class ClaimItem(models.Model):
     ], default='pending')
 
     def __str__(self):
-        return f"Item {self.id} for Claim {self.claim.id} - {self.description} - {self.amount}"
+        return f"Item {self.id} for Claim {self.claim.id} - {self.description} - {self.amount} - {self.status}"
